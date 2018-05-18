@@ -1,0 +1,12 @@
+{
+  "name": "ethereum-contract-workflow",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "wangshijun <wangshijun2010@gmail.com> (http://github.com/wangshijun)",
+  "license": "MIT"
+}
