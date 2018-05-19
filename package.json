@@ -10,6 +10,7 @@
   "author": "wangshijun <wangshijun2010@gmail.com> (http://github.com/wangshijun)",
   "license": "MIT",
   "dependencies": {
+    "fs-extra": "^6.0.1",
     "solc": "^0.4.24"
   }
 }
