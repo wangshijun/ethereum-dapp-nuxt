@@ -8,8 +8,8 @@ const { interface, bytecode } = require(contractPath);
 
 // 2. 配置 provider
 const provider = new HDWalletProvider(
-  'witness improve busy opinion addict sun gossip hedgehog common glass dignity primary',
-  'https://rinkeby.infura.io/CqCd0QgCozHBEk19ub2M'
+    'witness improve busy opinion addict sun gossip hedgehog common glass dignity primary',
+    'https://rinkeby.infura.io/CqCd0QgCozHBEk19ub2M'
 );
 
 // 3. 初始化 web3 实例
