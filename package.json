@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "node scripts/compile.js",
+    "pretest": "npm run compile",
+    "test": "mocha tests/",
+    "predeploy": "npm run compile",
+    "deploy": "node scripts/deploy.js"
   },
   "keywords": [],
   "author": "wangshijun <wangshijun2010@gmail.com> (http://github.com/wangshijun)",
