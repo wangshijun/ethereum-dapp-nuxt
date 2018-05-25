@@ -27,7 +27,7 @@ contract Project {
 
     function contribute() public payable {
         require(msg.value >= minInvest);
-        require(msg.value <= minInvest);
+        require(msg.value <= maxInvest);
         require(address(this).balance + msg.value <= goal);
 
         investors.push(msg.sender);
