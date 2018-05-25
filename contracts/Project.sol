@@ -17,6 +17,11 @@ contract Project {
     address[] public investors;
     Payment[] public payments;
 
+    modifier ownerOnly() {
+        require(msg.sender == owner);
+        _;
+    }
+
     constructor(string _description, uint _minInvest, uint _maxInvest, uint _goal) public {
         owner = msg.sender;
         description = _description;
@@ -33,7 +38,7 @@ contract Project {
         investors.push(msg.sender);
     }
 
-    function createPayment(string _description, uint _amount, address _receiver) public {
+    function createPayment(string _description, uint _amount, address _receiver) ownerOnly public {
         Payment memory newPayment = Payment({
             description: _description,
             amount: _amount,
@@ -71,7 +76,7 @@ contract Project {
         payment.voters.push(msg.sender);
     }
 
-    function doPayment(uint index) public {
+    function doPayment(uint index) ownerOnly public {
         Payment storage payment = payments[index];
 
         require(!payment.completed);
