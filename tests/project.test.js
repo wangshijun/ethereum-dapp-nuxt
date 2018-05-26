@@ -12,7 +12,7 @@ let accounts;
 let projectList;
 let project;
 
-describe.only('Project Contract', () => {
+describe('Project Contract', () => {
     // 1. 每次跑单测时需要部署全新的合约实例，起到隔离的作用
     beforeEach(async () => {
         // 1.1 拿到 ganache 本地测试网络的账号
