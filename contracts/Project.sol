@@ -31,6 +31,8 @@ library SafeMath {
 }
 
 contract Project {
+    using SafeMath for uint;
+
     struct Payment {
         string description;
         uint amount;
@@ -63,7 +65,10 @@ contract Project {
     function contribute() public payable {
         require(msg.value >= minInvest);
         require(msg.value <= maxInvest);
-        require(address(this).balance + msg.value <= goal);
+
+        uint newBalance = 0;
+        newBalance = address(this).balance.add(msg.value);
+        require(newBalance <= goal);
 
         investors.push(msg.sender);
     }
