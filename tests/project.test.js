@@ -53,4 +53,15 @@ describe.only('Project Contract', () => {
         assert.equal(maxInvest, 10000);
         assert.equal(goal, 1000000);
     });
+
+    it('should allow investor to contribute', async () => {
+        const investor = accounts[1];
+        await project.methods.contribute().send({
+            from: investor,
+            value: '200',
+        });
+
+        const amount = await project.methods.investors(investor).call();
+        assert.ok(amount == '200');
+    });
 });
