@@ -14,7 +14,7 @@ let accounts;
 let contract;
 const initialBrand = 'AUDI';
 
-describe('contract', () => {
+describe('Car Contract', () => {
     // 3. 每次跑单测时需要部署全新的合约实例，起到隔离的作用
     beforeEach(async () => {
         accounts = await web3.eth.getAccounts();
