@@ -1,6 +1,7 @@
 const assert = require('assert');
 const path = require('path');
 const ganache = require('ganache-cli');
+const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
 
 const web3 = new Web3(ganache.provider());
@@ -89,5 +90,52 @@ describe.only('Project Contract', () => {
         } catch (err) {
             assert.ok(err);
         }
+    });
+
+    it('allows investor to approve payments', async () => {
+        // 项目方、投资人、收款方账户
+        const owner = accounts[0];
+        const investor = accounts[1];
+        const receiver = accounts[2];
+
+        // 收款前的余额
+        const oldBalance = new BigNumber(await web3.eth.getBalance(receiver));
+
+        // 投资项目
+        await project.methods.contribute().send({
+            from: investor,
+            value: '5000',
+        });
+
+        // 资金支出请求
+        await project.methods.createPayment('Rent Office', 2000, receiver).send({
+            from: owner,
+            gas: '1000000',
+        });
+
+        // 投票
+        await project.methods.approvePayment(0).send({
+            from: investor,
+            gas: '1000000',
+        });
+
+        // 资金划转
+        await project.methods.doPayment(0).send({
+            from: owner,
+            gas: '1000000',
+        });
+
+        // 检查 payment 状态
+        const payment = await project.methods.payments(0).call();
+        assert.equal(payment.completed, true);
+        assert.equal(payment.voterCount, 1);
+
+        // 收款后的余额
+        const newBalance = new BigNumber(await web3.eth.getBalance(receiver));
+        const balanceDiff = newBalance.minus(oldBalance);
+        console.log({ oldBalance, newBalance, balanceDiff });
+
+        // 确保精确的余额变化
+        assert.equal(balanceDiff, 2000);
     });
 });
