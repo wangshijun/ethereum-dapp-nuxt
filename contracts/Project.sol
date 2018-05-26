@@ -38,7 +38,8 @@ contract Project {
         uint amount;
         address receiver;
         bool completed;
-        address[] voters;
+        mapping(address => bool) voters;
+        uint voterCount;
     }
 
     address public owner;
@@ -46,7 +47,9 @@ contract Project {
     uint public minInvest;
     uint public maxInvest;
     uint public goal;
-    address[] public investors;
+    uint public investorCount;
+    mapping(address => uint) public investors;
+
     Payment[] public payments;
 
     modifier ownerOnly() {
@@ -70,7 +73,8 @@ contract Project {
         newBalance = address(this).balance.add(msg.value);
         require(newBalance <= goal);
 
-        investors.push(msg.sender);
+        investors[msg.sender] = msg.value;
+        investorCount += 1;
     }
 
     function createPayment(string _description, uint _amount, address _receiver) ownerOnly public {
@@ -79,7 +83,7 @@ contract Project {
             amount: _amount,
             receiver: _receiver,
             completed: false,
-            voters: new address[](0)
+            voterCount: 0
         });
 
         payments.push(newPayment);
@@ -89,26 +93,13 @@ contract Project {
         Payment storage payment = payments[index];
 
         // must be investor to vote
-        bool isInvestor = false;
-        for (uint i = 0; i < investors.length; i++) {
-            isInvestor = investors[i] == msg.sender;
-            if (isInvestor) {
-                break;
-            }
-        }
-        require(isInvestor);
+        require(investors[msg.sender] > 0);
 
         // can not vote twice
-        bool hasVoted = false;
-        for (uint j = 0; j < payment.voters.length; j++) {
-            hasVoted = payment.voters[j] == msg.sender;
-            if (hasVoted) {
-                break;
-            }
-        }
-        require(!hasVoted);
+        require(!payment.voters[msg.sender]);
 
-        payment.voters.push(msg.sender);
+        payment.voters[msg.sender] = true;
+        payment.voterCount += 1;
     }
 
     function doPayment(uint index) ownerOnly public {
@@ -116,7 +107,7 @@ contract Project {
 
         require(!payment.completed);
         require(address(this).balance >= payment.amount);
-        require(payment.voters.length > (investors.length / 2));
+        require(payment.voterCount > (investorCount / 2));
 
         payment.receiver.transfer(payment.amount);
         payment.completed = true;
