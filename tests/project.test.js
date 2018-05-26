@@ -64,4 +64,30 @@ describe.only('Project Contract', () => {
         const amount = await project.methods.investors(investor).call();
         assert.ok(amount == '200');
     });
+
+    it('should require minInvest', async () => {
+        try {
+            const investor = accounts[1];
+            await project.methods.contribute().send({
+                from: investor,
+                value: '10',
+            });
+            assert.ok(false);
+        } catch (err) {
+            assert.ok(err);
+        }
+    });
+
+    it('should require maxInvest', async () => {
+        try {
+            const investor = accounts[1];
+            await project.methods.contribute().send({
+                from: investor,
+                value: '100000',
+            });
+            assert.ok(false);
+        } catch (err) {
+            assert.ok(err);
+        }
+    });
 });
