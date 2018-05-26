@@ -92,6 +92,23 @@ describe.only('Project Contract', () => {
         }
     });
 
+    it('should allow owner to create payment', async () => {
+        const owner = accounts[0];
+        const receiver = accounts[2];
+
+        await project.methods.createPayment('Rent Office', '500', receiver).send({
+            from: owner,
+            gas: '1000000',
+        });
+
+        const payment = await project.methods.payments(0).call();
+        assert.equal(payment.description, 'Rent Office');
+        assert.equal(payment.amount, '500');
+        assert.equal(payment.receiver, receiver);
+        assert.equal(payment.completed, false);
+        assert.equal(payment.voterCount, 0);
+    });
+
     it('allows investor to approve payments', async () => {
         // 项目方、投资人、收款方账户
         const owner = accounts[0];
