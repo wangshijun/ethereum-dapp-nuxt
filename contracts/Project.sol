@@ -80,6 +80,7 @@ contract Project {
         Payment storage payment = payments[index];
 
         require(!payment.completed);
+        require(address(this).balance >= payment.amount);
         require(payment.voters.length > (investors.length / 2));
 
         payment.receiver.transfer(payment.amount);
