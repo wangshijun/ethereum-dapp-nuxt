@@ -30,6 +30,20 @@ library SafeMath {
     }
 }
 
+contract ProjectList {
+    using SafeMath for uint;
+    address[] public projects;
+
+    function createProject(string _description, uint _minInvest, uint _maxInvest, uint _goal) public {
+        address newProject = new Project(_description, _minInvest, _maxInvest, _goal, msg.sender);
+        projects.push(newProject);
+    }
+
+    function getProjects() public view returns(address[]) {
+        return projects;
+    }
+}
+
 contract Project {
     using SafeMath for uint;
 
@@ -57,12 +71,12 @@ contract Project {
         _;
     }
 
-    constructor(string _description, uint _minInvest, uint _maxInvest, uint _goal) public {
-        owner = msg.sender;
+    constructor(string _description, uint _minInvest, uint _maxInvest, uint _goal, address _owner) public {
         description = _description;
         minInvest = _minInvest;
         maxInvest = _maxInvest;
         goal = _goal;
+        owner = _owner;
     }
 
     function contribute() public payable {
