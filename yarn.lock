@@ -2271,9 +2271,9 @@ functional-red-black-tree@^1.0.1:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/functional-red-black-tree/download/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
 
-ganache-cli@^6.1.0:
-  version "6.1.1"
-  resolved "http://registry.npm.taobao.org/ganache-cli/download/ganache-cli-6.1.1.tgz#f38e7ef37ea7e6dcedd2963cf00f6c27940eeaa4"
+ganache-cli@6.1.0:
+  version "6.1.0"
+  resolved "http://registry.npm.taobao.org/ganache-cli/download/ganache-cli-6.1.0.tgz#486c846497204b644166b5f0f74c9b41d02bdc25"
   dependencies:
     source-map-support "^0.5.3"
     webpack-cli "^2.0.9"
