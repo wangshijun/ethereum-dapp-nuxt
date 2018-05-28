@@ -1,25 +1,31 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = {
-  display: 'flex',
-  flexDirection: 'column',
-  margin: '0 auto',
-  width: '80%',
-  maxWidth: '1200px',
-  minHeight: '100vh',
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    minHeight: '100vh',
+  },
+  wrapper: {
+    margin: '0 auto',
+    width: '80%',
+    maxWidth: '1200px',
+    marginTop: '1em',
+  },
 };
 
 class Layout extends React.Component {
   render() {
+    const { classes } = this.props;
+
     return (
-      <div style={styles}>
-        <Grid container>
-          {this.props.children}
-        </Grid>
+      <div className={classes.container}>
+        <div className={classes.wrapper}>{this.props.children}</div>
       </div>
     );
   }
 }
 
-export default Layout;
+export default withStyles(styles)(Layout);
