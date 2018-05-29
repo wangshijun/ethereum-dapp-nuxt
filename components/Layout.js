@@ -1,6 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
+import Header from './Header';
+
 const styles = {
   container: {
     display: 'flex',
@@ -22,6 +24,7 @@ class Layout extends React.Component {
 
     return (
       <div className={classes.container}>
+        <Header />
         <div className={classes.wrapper}>{this.props.children}</div>
       </div>
     );
