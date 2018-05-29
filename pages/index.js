@@ -31,7 +31,7 @@ class Index extends React.Component {
         <ul>
           {accounts.map(x => (
             <li key={x.account}>
-              {x.account} => {x.balance}
+              {x.account} => {web3.utils.fromWei(x.balance, 'ether')}
             </li>
           ))}
         </ul>
