@@ -12,12 +12,13 @@ class Index extends React.Component {
     this.state = {
       accounts: [],
     };
+
+    this.web3 = new Web3(window.web3.currentProvider);
   }
 
   async componentDidMount() {
-    const web3 = new Web3(window.web3.currentProvider);
-    const accounts = await web3.eth.getAccounts();
-    const balances = await Promise.all(accounts.map(x => web3.eth.getBalance(x)));
+    const accounts = await this.web3.eth.getAccounts();
+    const balances = await Promise.all(accounts.map(x => this.web3.eth.getBalance(x)));
     console.log({ accounts, balances });
 
     this.setState({ accounts: accounts.map((x, i) => ({ account: x, balance: balances[i] })) });
@@ -31,7 +32,7 @@ class Index extends React.Component {
         <ul>
           {accounts.map(x => (
             <li key={x.account}>
-              {x.account} => {web3.utils.fromWei(x.balance, 'ether')}
+              {x.account} => {this.web3.utils.fromWei(x.balance, 'ether')}
             </li>
           ))}
         </ul>
