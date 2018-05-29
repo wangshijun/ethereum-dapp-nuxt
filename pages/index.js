@@ -1,7 +1,7 @@
 import React from 'react';
-import Web3 from 'web3';
 import { Button } from '@material-ui/core';
 
+import web3 from '../libs/web3';
 import withRoot from '../libs/withRoot';
 import Layout from '../components/Layout';
 
@@ -12,13 +12,11 @@ class Index extends React.Component {
     this.state = {
       accounts: [],
     };
-
-    this.web3 = new Web3(window.web3.currentProvider);
   }
 
   async componentDidMount() {
-    const accounts = await this.web3.eth.getAccounts();
-    const balances = await Promise.all(accounts.map(x => this.web3.eth.getBalance(x)));
+    const accounts = await web3.eth.getAccounts();
+    const balances = await Promise.all(accounts.map(x => web3.eth.getBalance(x)));
     console.log({ accounts, balances });
 
     this.setState({ accounts: accounts.map((x, i) => ({ account: x, balance: balances[i] })) });
@@ -32,7 +30,7 @@ class Index extends React.Component {
         <ul>
           {accounts.map(x => (
             <li key={x.account}>
-              {x.account} => {this.web3.utils.fromWei(x.balance, 'ether')}
+              {x.account} => {web3.utils.fromWei(x.balance, 'ether')} ETH
             </li>
           ))}
         </ul>
