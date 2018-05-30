@@ -21,12 +21,12 @@ describe('Project Contract', () => {
         // 1.2 部署 ProjectList 合约
         projectList = await new web3.eth.Contract(JSON.parse(ProjectList.interface))
             .deploy({ data: ProjectList.bytecode })
-            .send({ from: accounts[0], gas: '1000000' });
+            .send({ from: accounts[0], gas: '5000000' });
 
         // 1.3 调用 ProjectList 的 createProject 方法
         await projectList.methods.createProject('Ethereum DApp Tutorial', 100, 10000, 1000000).send({
             from: accounts[0],
-            gas: '1000000',
+            gas: '5000000',
         });
 
         // 1.4 获取刚创建的 Project 实例的地址
