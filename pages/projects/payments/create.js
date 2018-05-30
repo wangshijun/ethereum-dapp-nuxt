@@ -49,8 +49,8 @@ class PaymentCreate extends React.Component {
     if (amount <= 0) {
       return this.setState({ errmsg: '支出金额必须大于0' });
     }
-    if (!receiver) {
-      return this.setState({ errmsg: '收款人不能为空' });
+    if (!web3.utils.isAddress(receiver)) {
+      return this.setState({ errmsg: '收款人账户地址不正确' });
     }
 
     const amountInWei = web3.utils.toWei(amount, 'ether');
