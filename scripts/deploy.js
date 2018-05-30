@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
+const config = require('config');
 const Web3 = require('web3');
 const HDWalletProvider = require('truffle-hdwallet-provider');
 
@@ -9,8 +10,8 @@ const { interface, bytecode } = require(contractPath);
 
 // 2. 配置 provider
 const provider = new HDWalletProvider(
-    'witness improve busy opinion addict sun gossip hedgehog common glass dignity primary',
-    'https://rinkeby.infura.io/CqCd0QgCozHBEk19ub2M'
+    config.get('hdwallet'),
+    config.get('infuraUrl'),
 );
 
 // 3. 初始化 web3 实例
