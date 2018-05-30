@@ -34,7 +34,7 @@ const contract = new web3.eth.Contract(JSON.parse(ProjectList.interface), addres
   const results = await Promise.all(projects.map(x =>
     contract
       .methods.createProject(x.description, x.minInvest, x.maxInvest, x.goal)
-      .send({ from: owner, gas: '1000000' })
+      .send({ from: owner, gas: '5000000' })
     )
   );
 

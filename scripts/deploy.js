@@ -25,7 +25,7 @@ const web3 = new Web3(provider);
     console.time('合约部署耗时');
     const result = await new web3.eth.Contract(JSON.parse(interface))
         .deploy({ data: bytecode })
-        .send({ from: accounts[0], gas: '1000000' });
+        .send({ from: accounts[0], gas: '5000000' });
     console.timeEnd('合约部署耗时');
 
     const contractAddress = result.options.address;
