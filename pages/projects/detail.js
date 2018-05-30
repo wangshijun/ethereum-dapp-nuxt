@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Button, Typography, LinearProgress, Paper } from '@material-ui/core';
+import { Grid, Button, Typography, LinearProgress, Paper, TextField } from '@material-ui/core';
 
 import { Link } from '../../routes';
 import web3 from '../../libs/web3';
@@ -33,6 +33,21 @@ class ProjectDetail extends React.Component {
     return { project };
   }
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      amount: 0,
+    };
+  }
+
+  getInputHandler(key) {
+    return e => {
+      console.log(e.target.value);
+      this.setState({ [key]: e.target.value });
+    };
+  }
+
   render() {
     const { project } = this.props;
 
@@ -61,6 +76,23 @@ class ProjectDetail extends React.Component {
           <InfoBlock title={`${web3.utils.fromWei(project.maxInvest, 'ether')} ETH`} description="最大投资金额" />
           <InfoBlock title={`${project.investorCount}人`} description="参投人数" />
           <InfoBlock title={`${web3.utils.fromWei(project.balance, 'ether')} ETH`} description="已募资金额" />
+        </Grid>
+        <Grid container spacing={16}>
+          <Grid item md={12}>
+            <TextField
+              required
+              id="amount"
+              label="投资金额"
+              style={{ marginRight: '15px' }}
+              value={this.state.amount}
+              onChange={this.getInputHandler('amount')}
+              margin="normal"
+              InputProps={{ endAdornment: 'ETH' }}
+            />
+            <Button size="small" variant="raised" color="primary">
+              立即投资
+            </Button>
+          </Grid>
         </Grid>
       </Paper>
     );
