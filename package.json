@@ -7,10 +7,11 @@
     "compile": "node scripts/compile.js",
     "pretest": "npm run compile",
     "test": "mocha tests/",
-    "predeploy": "npm run compile",
+    "predeploy": "npm run test",
     "deploy": "node scripts/deploy.js",
     "dev": "node server.js",
     "build": "next build",
+    "prestart": "npm run build",
     "start": "pm2 restart pm2.json"
   },
   "keywords": [],
