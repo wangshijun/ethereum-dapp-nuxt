@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Button, Typography, LinearProgress, Paper, TextField } from '@material-ui/core';
+import { Grid, Button, Typography, LinearProgress, CircularProgress, Paper, TextField } from '@material-ui/core';
 
 import { Link } from '../../routes';
 import web3 from '../../libs/web3';
@@ -38,7 +38,11 @@ class ProjectDetail extends React.Component {
 
     this.state = {
       amount: 0,
+      errmsg: '',
+      loading: false,
     };
+
+    this.onSubmit = this.contributeProject.bind(this);
   }
 
   getInputHandler(key) {
@@ -46,6 +50,52 @@ class ProjectDetail extends React.Component {
       console.log(e.target.value);
       this.setState({ [key]: e.target.value });
     };
+  }
+
+  async contributeProject() {
+    const { amount } = this.state;
+    const { minInvest, maxInvest } = this.props.project;
+    const minInvestInEther = web3.utils.fromWei(minInvest, 'ether');
+    const maxInvestInEther = web3.utils.fromWei(maxInvest, 'ether');
+
+    console.log({ amount, minInvestInEther, maxInvestInEther });
+
+    // 字段合规检查
+    if (amount <= 0) {
+      return this.setState({ errmsg: '投资金额必须大于0' });
+    }
+    if (amount < minInvestInEther) {
+      return this.setState({ errmsg: '投资金额必须大于最小投资金额' });
+    }
+    if (amount > maxInvestInEther) {
+      return this.setState({ errmsg: '投资金额必须小于最大投资金额' });
+    }
+
+    try {
+      this.setState({ loading: true, errmsg: '' });
+
+      // 获取账户
+      const accounts = await web3.eth.getAccounts();
+      const owner = accounts[0];
+
+      // 发起转账
+      const contract = Project(this.props.project.address);
+      const result = await contract.methods
+        .contribute()
+        .send({ from: owner, value: web3.utils.toWei(amount, 'ether'), gas: '5000000' });
+
+      this.setState({ errmsg: '投资成功', amount: 0 });
+      console.log(result);
+
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
+    } catch (err) {
+      console.error(err);
+      this.setState({ errmsg: err.message || err.toString });
+    } finally {
+      this.setState({ loading: false });
+    }
   }
 
   render() {
@@ -89,9 +139,14 @@ class ProjectDetail extends React.Component {
               margin="normal"
               InputProps={{ endAdornment: 'ETH' }}
             />
-            <Button size="small" variant="raised" color="primary">
-              立即投资
+            <Button size="small" variant="raised" color="primary" onClick={this.onSubmit}>
+              {this.state.loading ? <CircularProgress color="secondary" size={24} /> : '立即投资'}
             </Button>
+            {!!this.state.errmsg && (
+              <Typography component="p" style={{ color: 'red' }}>
+                {this.state.errmsg}
+              </Typography>
+            )}
           </Grid>
         </Grid>
       </Paper>

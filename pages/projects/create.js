@@ -56,7 +56,7 @@ class ProjectCreate extends React.Component {
     const goalInWei = web3.utils.toWei(goal, 'ether');
 
     try {
-      this.setState({ loading: true });
+      this.setState({ loading: true, errmsg: '' });
 
       // 获取账户
       const accounts = await web3.eth.getAccounts();
