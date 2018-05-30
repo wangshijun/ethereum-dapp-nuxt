@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Button, Typography, Card, CardContent, CardActions } from '@material-ui/core';
+import { Grid, Button, Typography, Card, CardContent, CardActions, LinearProgress } from '@material-ui/core';
 
 import { Link } from '../routes';
 import web3 from '../libs/web3';
@@ -55,6 +55,8 @@ class Index extends React.Component {
   }
 
   renderProject(project) {
+    const progress = project.balance / project.goal * 100;
+
     return (
       <Grid item md={4} key={project.address}>
         <Card>
@@ -62,6 +64,7 @@ class Index extends React.Component {
             <Typography gutterBottom variant="headline" component="h2">
               {project.description}
             </Typography>
+            <LinearProgress color="primary" variant="determinate" value={progress} />
             <Typography component="p">{project.address}</Typography>
           </CardContent>
           <CardActions>
