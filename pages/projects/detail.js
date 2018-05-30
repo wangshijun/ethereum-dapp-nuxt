@@ -18,6 +18,12 @@ class ProjectDetail extends React.Component {
       summary
     );
 
+    const tasks = [];
+    for (let i = 0; i < paymentCount; i++) {
+      tasks.push(contract.methods.payments(i).call());
+    }
+    const payments = await Promise.all(tasks);
+
     const project = {
       address: query.address,
       description,
@@ -28,7 +34,10 @@ class ProjectDetail extends React.Component {
       investorCount,
       paymentCount,
       owner,
+      payments,
     };
+
+    console.log(project);
 
     return { project };
   }
