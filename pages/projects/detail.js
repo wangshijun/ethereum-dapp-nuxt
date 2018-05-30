@@ -62,6 +62,7 @@ class ProjectDetail extends React.Component {
       amount: 0,
       errmsg: '',
       loading: false,
+      isApproving: false,
     };
 
     this.onSubmit = this.contributeProject.bind(this);
@@ -117,6 +118,31 @@ class ProjectDetail extends React.Component {
       this.setState({ errmsg: err.message || err.toString });
     } finally {
       this.setState({ loading: false });
+    }
+  }
+
+  async approvePayment(i) {
+    try {
+      this.setState({ isApproving: i });
+
+      const accounts = await web3.eth.getAccounts();
+      const investor = accounts[0];
+
+      const contract = Project(this.props.project.address);
+      const result = await contract.methods
+        .approvePayment(i)
+        .send({ from: investor, gas: '5000000' });
+
+      window.alert('投票成功');
+
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
+    } catch (err) {
+      console.error(err);
+      window.alert(err.message || err.toString());
+    } finally {
+      this.setState({ isApproving: false });
     }
   }
 
@@ -196,18 +222,7 @@ class ProjectDetail extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {project.payments.map(payment => {
-              return (
-                <TableRow key={payment.id}>
-                  <TableCell>{payment.description}</TableCell>
-                  <TableCell numeric>{web3.utils.fromWei(payment.amount, 'ether')} ETH</TableCell>
-                  <TableCell>{payment.receiver}</TableCell>
-                  <TableCell>{payment.completed ? '是' : '否'}</TableCell>
-                  <TableCell>{payment.voterCount}/{project.investorCount}</TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              );
-            })}
+            {project.payments.map((payment, index) => this.renderPaymentRow(payment, index, project))}
           </TableBody>
         </Table>
         <Link route={`/projects/${project.address}/payments/create`}>
@@ -216,6 +231,32 @@ class ProjectDetail extends React.Component {
           </Button>
         </Link>
       </Paper>
+    );
+  }
+
+  isApproving(i) {
+    return typeof this.state.isApproving === 'number' && this.state.isApproving === i;
+  }
+
+  renderPaymentRow(payment, index, project) {
+    const canApprove = !payment.completed;
+    return (
+      <TableRow key={index}>
+        <TableCell>{payment.description}</TableCell>
+        <TableCell numeric>{web3.utils.fromWei(payment.amount, 'ether')} ETH</TableCell>
+        <TableCell>{payment.receiver}</TableCell>
+        <TableCell>{payment.completed ? '是' : '否'}</TableCell>
+        <TableCell>
+          {payment.voterCount}/{project.investorCount}
+        </TableCell>
+        <TableCell>
+          {canApprove && (
+            <Button size="small" color="primary" onClick={() => this.approvePayment(index)}>
+              {this.isApproving(index) ? <CircularProgress color="secondary" size={24} /> : '投赞成票'}
+            </Button>
+          )}
+        </TableCell>
+      </TableRow>
     );
   }
 }
