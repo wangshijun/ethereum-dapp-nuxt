@@ -13,8 +13,9 @@ class PaymentCreate extends React.Component {
 
     const summary = await contract.methods.getSummary().call();
     const description = summary[0];
+    const owner = summary[7];
 
-    return { project: { address: query.address, description } };
+    return { project: { address: query.address, description, owner } };
   }
 
   constructor(props) {
@@ -60,13 +61,18 @@ class PaymentCreate extends React.Component {
 
       // 获取账户
       const accounts = await web3.eth.getAccounts();
-      const owner = accounts[0];
+      const sender = accounts[0];
+
+      // 检查账户
+      if (sender !== this.props.project.owner) {
+        return window.alert('只有管理员能创建资金支出请求');
+      }
 
       // 创建项目
       const contract = Project(this.props.project.address);
       const result = await contract.methods
         .createPayment(description, amountInWei, receiver)
-        .send({ from: owner, gas: '5000000' });
+        .send({ from: sender, gas: '5000000' });
 
       this.setState({ errmsg: '资金支出请求创建成功' });
       console.log(result);
