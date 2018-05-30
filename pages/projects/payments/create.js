@@ -13,9 +13,10 @@ class PaymentCreate extends React.Component {
 
     const summary = await contract.methods.getSummary().call();
     const description = summary[0];
+    const balance = summary[4];
     const owner = summary[7];
 
-    return { project: { address: query.address, description, owner } };
+    return { project: { address: query.address, description, owner, balance } };
   }
 
   constructor(props) {
@@ -113,7 +114,9 @@ class PaymentCreate extends React.Component {
               value={this.state.amount}
               onChange={this.getInputHandler('amount')}
               margin="normal"
-              InputProps={{ endAdornment: 'ETH' }}
+              InputProps={{
+                endAdornment: `可支出资金 ${web3.utils.fromWei(this.props.project.balance.toString(), 'ether')} ETH`,
+              }}
             />
             <TextField
               fullWidth
