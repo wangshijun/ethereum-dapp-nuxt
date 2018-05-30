@@ -63,6 +63,7 @@ class ProjectDetail extends React.Component {
       errmsg: '',
       loading: false,
       isApproving: false,
+      isPaying: false,
     };
 
     this.onSubmit = this.contributeProject.bind(this);
@@ -129,9 +130,7 @@ class ProjectDetail extends React.Component {
       const investor = accounts[0];
 
       const contract = Project(this.props.project.address);
-      const result = await contract.methods
-        .approvePayment(i)
-        .send({ from: investor, gas: '5000000' });
+      const result = await contract.methods.approvePayment(i).send({ from: investor, gas: '5000000' });
 
       window.alert('投票成功');
 
@@ -143,6 +142,29 @@ class ProjectDetail extends React.Component {
       window.alert(err.message || err.toString());
     } finally {
       this.setState({ isApproving: false });
+    }
+  }
+
+  async doPayment(i) {
+    try {
+      this.setState({ isPaying: i });
+
+      const accounts = await web3.eth.getAccounts();
+      const owner = accounts[0];
+
+      const contract = Project(this.props.project.address);
+      const result = await contract.methods.doPayment(i).send({ from: owner, gas: '5000000' });
+
+      window.alert('资金划转成功');
+
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
+    } catch (err) {
+      console.error(err);
+      window.alert(err.message || err.toString());
+    } finally {
+      this.setState({ isPaying: false });
     }
   }
 
@@ -238,8 +260,13 @@ class ProjectDetail extends React.Component {
     return typeof this.state.isApproving === 'number' && this.state.isApproving === i;
   }
 
+  isPaying(i) {
+    return typeof this.state.isPaying === 'number' && this.state.isPaying === i;
+  }
+
   renderPaymentRow(payment, index, project) {
     const canApprove = !payment.completed;
+    const canDoPayment = !payment.completed && payment.voterCount / project.investorCount > 0.5;
     return (
       <TableRow key={index}>
         <TableCell>{payment.description}</TableCell>
@@ -253,6 +280,11 @@ class ProjectDetail extends React.Component {
           {canApprove && (
             <Button size="small" color="primary" onClick={() => this.approvePayment(index)}>
               {this.isApproving(index) ? <CircularProgress color="secondary" size={24} /> : '投赞成票'}
+            </Button>
+          )}
+          {canDoPayment && (
+            <Button size="small" color="primary" onClick={() => this.doPayment(index)}>
+              {this.isPaying(index) ? <CircularProgress color="primary" size={24} /> : '资金划转'}
             </Button>
           )}
         </TableCell>
