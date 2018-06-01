@@ -8,7 +8,7 @@
             <div slot="header" class="clearfix">
               <strong>{{project.description}}</strong>
               <el-button style="float: right; padding: 3px 0" type="text">
-                <router-link :to="'/projects/' + project.address">查看详情</router-link>
+                <a :href="'/projects/' + project.address">查看详情</a>
               </el-button>
             </div>
             <div class="progress-container">
@@ -91,8 +91,8 @@ export default {
     console.log(projects);
 
     return { projects };
-  }
-}
+  },
+};
 </script>
 
 <style>
@@ -102,7 +102,7 @@ export default {
 
 .info-block {
   padding: 0.5em 1em;
-  border: 1px dotted #AAA;
+  border: 1px dotted #aaa;
   height: 80px;
   min-height: 80px;
   margin-bottom: 16px;

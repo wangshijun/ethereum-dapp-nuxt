@@ -11,9 +11,9 @@
           text-color="#fff"
           active-text-color="#ffd04b">
           <el-menu-item index="3" class="pull-right">
-            <router-link to="/projects/create">
+            <a href="/projects/create">
               <el-button type="primary">发起项目</el-button>
-            </router-link>
+            </a>
           </el-menu-item>
           <el-menu-item index="1"><a href="/">众筹 DApp</a></el-menu-item>
           <el-menu-item index="2"><a href="/">项目列表</a></el-menu-item>

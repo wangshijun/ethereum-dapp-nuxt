@@ -41,6 +41,15 @@
             </div>
           </el-col>
         </el-row>
+        <el-form :inline="true" :model="contributeForm" class="contribute-form">
+          <el-form-item label="">
+            <el-input v-model="contributeForm.amount" placeholder="投资金额"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="contributeProject" :loading="contributeForm.loading">立即投资</el-button>
+          </el-form-item>
+          <el-alert v-if="contributeForm.errmsg" :title="contributeForm.errmsg" type="error" />
+        </el-form>
       </el-card>
     </div>
   </div>
@@ -52,10 +61,23 @@ import Project from '../../libs/project';
 import ProjectList from '../../libs/projectList';
 
 export default {
+  watchQuery: ['page'],
+
+  data() {
+    return {
+      contributeForm: {
+        amount: 0,
+        errmsg: '',
+        loading: false,
+      },
+    };
+  },
+
   async asyncData({ params }) {
     const contract = Project(params.address);
 
     const summary = await contract.methods.getSummary().call();
+    console.log({ params, summary });
     const [description, minInvest, maxInvest, goal, balance, investorCount, paymentCount, owner] = Object.values(
       summary
     );
@@ -83,8 +105,60 @@ export default {
     console.log(project);
 
     return { project };
-  }
-}
+  },
+
+  methods: {
+    async contributeProject() {
+      console.log('contributeProject', this.contributeForm);
+
+      const { amount } = this.contributeForm;
+      const { minInvest, maxInvest, address } = this.project;
+
+      console.log({ amount, minInvest, maxInvest });
+
+      // 字段合规检查
+      if (amount <= 0) {
+        this.$set(this.contributeForm, 'errmsg', '投资金额必须大于0');
+        return;
+      }
+      if (amount < minInvest) {
+        this.$set(this.contributeForm, 'errmsg', '投资金额必须大于最小投资金额');
+        return;
+      }
+      if (amount > maxInvest) {
+        this.$set(this.contributeForm, 'errmsg', '投资金额必须小于最大投资金额');
+        return;
+      }
+
+      try {
+        this.contributeForm = Object.assign({}, this.contributeForm, { errmsg: '', loading: true });
+
+        // 获取账户
+        const accounts = await web3.eth.getAccounts();
+        const owner = accounts[0];
+
+        // 发起转账
+        const contract = Project(address);
+        const result = await contract.methods
+          .contribute()
+          .send({ from: owner, value: web3.utils.toWei(amount, 'ether'), gas: '5000000' });
+
+        this.contributeForm = Object.assign({}, this.contributeForm, { errmsg: '投资成功', amount: 0, loading: false });
+        console.log(result);
+
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+      } catch (err) {
+        console.error(err);
+        this.contributeForm = Object.assign({}, this.contributeForm, {
+          errmsg: err.message || err.toString,
+          loading: false,
+        });
+      }
+    },
+  },
+};
 </script>
 
 <style>
@@ -94,7 +168,7 @@ export default {
 
 .info-block {
   padding: 0.5em 1em;
-  border: 1px dotted #AAA;
+  border: 1px dotted #aaa;
   height: 80px;
   min-height: 80px;
   margin-bottom: 16px;
