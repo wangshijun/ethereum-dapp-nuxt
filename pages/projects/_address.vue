@@ -108,6 +108,10 @@ export default {
   },
 
   methods: {
+    setState(key, values) {
+      this[key] = Object.assign({}, this[key], values || {});
+    },
+
     async contributeProject() {
       console.log('contributeProject', this.contributeForm);
 
@@ -118,20 +122,20 @@ export default {
 
       // 字段合规检查
       if (amount <= 0) {
-        this.$set(this.contributeForm, 'errmsg', '投资金额必须大于0');
+        this.setState('contributeForm', { errmsg: '投资金额必须大于0' });
         return;
       }
       if (amount < minInvest) {
-        this.$set(this.contributeForm, 'errmsg', '投资金额必须大于最小投资金额');
+        this.setState('contributeForm', { errmsg: '投资金额必须大于最小投资金额' });
         return;
       }
       if (amount > maxInvest) {
-        this.$set(this.contributeForm, 'errmsg', '投资金额必须小于最大投资金额');
+        this.setState('contributeForm', { errmsg: '投资金额必须小于最大投资金额' });
         return;
       }
 
       try {
-        this.contributeForm = Object.assign({}, this.contributeForm, { errmsg: '', loading: true });
+        this.setState('contributeForm', { errmsg: '', loading: true });
 
         // 获取账户
         const accounts = await web3.eth.getAccounts();
@@ -143,7 +147,7 @@ export default {
           .contribute()
           .send({ from: owner, value: web3.utils.toWei(amount, 'ether'), gas: '5000000' });
 
-        this.contributeForm = Object.assign({}, this.contributeForm, { errmsg: '投资成功', amount: 0, loading: false });
+        this.setState('contributeForm', { errmsg: '投资成功', amount: 0, loading: false });
         console.log(result);
 
         setTimeout(() => {
@@ -151,7 +155,7 @@ export default {
         }, 1000);
       } catch (err) {
         console.error(err);
-        this.contributeForm = Object.assign({}, this.contributeForm, {
+        this.setState('contributeForm', {
           errmsg: err.message || err.toString,
           loading: false,
         });
