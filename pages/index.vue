@@ -7,7 +7,12 @@
           <el-card class="project-card">
             <div slot="header" class="clearfix">
               <strong>{{project.description}}</strong>
-              <el-button style="float: right; padding: 3px 0" type="text"><a v-href="'/projects/' + project.address">查看详情</a></el-button>
+              <el-button style="float: right; padding: 3px 0" type="text">
+                <router-link :to="'/projects/' + project.address">查看详情</router-link>
+              </el-button>
+            </div>
+            <div class="progress-container">
+              <el-progress :text-inside="true" :stroke-width="18" :percentage="project.progress"></el-progress>
             </div>
             <el-row :gutter="16" class="info-blocks">
               <el-col :span="8">
@@ -76,6 +81,7 @@ export default {
         maxInvest: web3.utils.fromWei(maxInvest, 'ether'),
         goal: web3.utils.fromWei(goal, 'ether'),
         balance: web3.utils.fromWei(balance, 'ether'),
+        progress: Math.ceil(balance / goal * 100),
         investorCount,
         paymentCount,
         owner,
@@ -110,5 +116,9 @@ export default {
 .info-block-description {
   margin: 0;
   color: #666;
+}
+
+.progress-container {
+  margin-bottom: 16px;
 }
 </style>
