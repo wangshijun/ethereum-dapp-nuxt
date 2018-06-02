@@ -12,7 +12,7 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "prestart": "npm run build",
-    "start": "pm2 restart pm2.json"
+    "start": "nuxt start"
   },
   "keywords": [],
   "author": "wangshijun <wangshijun2010@gmail.com> (http://github.com/wangshijun)",
