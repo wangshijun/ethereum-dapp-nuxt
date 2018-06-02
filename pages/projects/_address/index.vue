@@ -81,6 +81,25 @@
             label="投票状态"
             width="100">
           </el-table-column>
+           <el-table-column
+            fixed="right"
+            label="操作"
+            width="200">
+            <template slot-scope="scope">
+              <el-button
+                v-if="scope.row.canApprove"
+                @click="approvePayment(scope.$index)"
+                :loading="approveState.loading === scope.$index"
+                type="text"
+                size="small">投赞成票</el-button>
+              <el-button
+                v-if="scope.row.canDoPayment"
+                @click="doPayment(scope.$index)"
+                :loading="doPayment.loading === scope.$index"
+                type="text"
+                size="small">资金划转</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-card>
       <a :href="'/projects/' + project.address + '/payments/create'">
@@ -103,6 +122,14 @@ export default {
         amount: 0,
         errmsg: '',
         loading: false,
+      },
+      approveState: {
+        loading: false,
+        errmsg: false,
+      },
+      doPaymentState: {
+        loading: false,
+        errmsg: false,
       },
     };
   },
@@ -136,6 +163,8 @@ export default {
       payments: payments.map(x => {
         x.amount = `${web3.utils.fromWei(x.amount, 'ether')} ETH`;
         x.voteStatus = `${x.voterCount}/${investorCount}`;
+        x.canApprove = !x.completed;
+        x.canDoPayment = !x.completed && x.voterCount / investorCount > 0.5;
         return x;
       }),
     };
@@ -197,6 +226,62 @@ export default {
           errmsg: err.message || err.toString,
           loading: false,
         });
+      }
+    },
+
+    async approvePayment(i) {
+      try {
+        this.setState('approveState', { loading: i });
+
+        const accounts = await web3.eth.getAccounts();
+        const sender = accounts[0];
+
+        const contract = Project(this.project.address);
+        const isInvestor = await contract.methods.investors(sender).call();
+        if (!isInvestor) {
+          return window.alert('只有投资人才有权投票');
+        }
+
+        const result = await contract.methods.approvePayment(i).send({ from: sender, gas: '5000000' });
+
+        window.alert('投票成功');
+
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+      } catch (err) {
+        console.error(err);
+        window.alert(err.message || err.toString());
+      } finally {
+        this.setState('approveState', { loading: false });
+      }
+    },
+
+    async doPayment(i) {
+      try {
+        this.setState('doPaymentState', { loading: i });
+
+        const accounts = await web3.eth.getAccounts();
+        const sender = accounts[0];
+
+        // 检查账户
+        if (sender !== this.project.owner) {
+          return window.alert('只有管理员能发起资金支出请求');
+        }
+
+        const contract = Project(this.project.address);
+        const result = await contract.methods.doPayment(i).send({ from: sender, gas: '5000000' });
+
+        window.alert('资金划转成功');
+
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+      } catch (err) {
+        console.error(err);
+        window.alert(err.message || err.toString());
+      } finally {
+        this.setState('doPaymentState', { loading: false });
       }
     },
   },
