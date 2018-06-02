@@ -2,7 +2,7 @@
   <div class="page-container">
     <h2 class="page-header">创建项目</h2>
     <div class="page-content">
-      <el-card class="project-card">
+      <el-card>
         <el-form label-position="top" label-width="80px" :model="createForm">
           <el-form-item label="项目名称">
             <el-input v-model="createForm.description"></el-input>

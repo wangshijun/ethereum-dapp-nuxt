@@ -59,7 +59,7 @@
           <el-table-column
             prop="description"
             label="支出理由"
-            width="100">
+            width="200">
           </el-table-column>
           <el-table-column
             prop="amount"
@@ -91,9 +91,8 @@
 </template>
 
 <script>
-import web3 from '../../libs/web3';
-import Project from '../../libs/project';
-import ProjectList from '../../libs/projectList';
+import web3 from '../../../libs/web3';
+import Project from '../../../libs/project';
 
 export default {
   watchQuery: ['page'],
