@@ -72,6 +72,10 @@ contract Project {
     }
 
     constructor(string _description, uint _minInvest, uint _maxInvest, uint _goal, address _owner) public {
+        require(_maxInvest >= _minInvest);
+        require(_goal >= _minInvest);
+        require(_goal >= _maxInvest);
+
         description = _description;
         minInvest = _minInvest;
         maxInvest = _maxInvest;
@@ -87,8 +91,12 @@ contract Project {
         newBalance = address(this).balance.add(msg.value);
         require(newBalance <= goal);
 
-        investors[msg.sender] = msg.value;
-        investorCount += 1;
+        if (investors[msg.sender] > 0) {
+            investors[msg.sender] += msg.value;
+        } else {
+            investors[msg.sender] = msg.value;
+            investorCount += 1;
+        }
     }
 
     function createPayment(string _description, uint _amount, address _receiver) ownerOnly public {
