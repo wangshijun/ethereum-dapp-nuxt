@@ -2,7 +2,7 @@
 
 ## 这是什么？
 
-以太坊智能合约和 DApp 开发框架和工作流示例，基于 [Vue.js](https://vuejs.org/) + [Nuxt.js](https://nuxtjs.org/) + [ElementUI](http://element-cn.eleme.io/#/zh-CN) 实现的 DApp 部分。
+以太坊智能合约和 DApp 开发框架和工作流示例，基于 [Vue.js](https://vuejs.org/) + [Nuxt.js](https://nuxtjs.org/) + [ElementUI](http://element-cn.eleme.io/#/zh-CN) 实现。
 
 > 基于 [React](http://reactjs.org/) + [Next.js](https://nextjs.org/) + [Material UI](https://material-ui.com/) 实现的版本参见：[wangshijun/ethereum-contract-workflow](https://github.com/wangshijun/ethereum-contract-workflow)。
 
