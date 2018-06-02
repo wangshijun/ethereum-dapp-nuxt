@@ -52,6 +52,41 @@
         </el-form>
       </el-card>
     </div>
+    <h2 class="page-header">资金支出列表</h2>
+    <div class="page-content">
+      <el-card class="project-card">
+        <el-table :data="project.payments" stripe style="width: 100%">
+          <el-table-column
+            prop="description"
+            label="支出理由"
+            width="100">
+          </el-table-column>
+          <el-table-column
+            prop="amount"
+            label="支出金额"
+            width="100">
+          </el-table-column>
+          <el-table-column
+            prop="receiver"
+            label="收款人"
+            width="400">
+          </el-table-column>
+          <el-table-column
+            prop="completed"
+            label="已完成"
+            width="100">
+          </el-table-column>
+          <el-table-column
+            prop="voteStatus"
+            label="投票状态"
+            width="100">
+          </el-table-column>
+        </el-table>
+      </el-card>
+      <a :href="'/projects/' + project.address + '/payments/create'">
+        <el-button type="primary">创建资金支出请求</el-button>
+      </a>
+    </div>
   </div>
 </template>
 
@@ -99,7 +134,11 @@ export default {
       paymentCount,
       owner,
       progress: Math.ceil(balance / goal * 100),
-      payments,
+      payments: payments.map(x => {
+        x.amount = `${web3.utils.fromWei(x.amount, 'ether')} ETH`;
+        x.voteStatus = `${x.voterCount}/${investorCount}`;
+        return x;
+      }),
     };
 
     console.log(project);
