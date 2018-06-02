@@ -16,34 +16,19 @@
             </div>
             <el-row :gutter="16" class="info-blocks">
               <el-col :span="8">
-                <div class="info-block">
-                  <p class="info-block-title">{{project.goal}} ETH</p>
-                  <p class="info-block-description">募资上限</p>
-                </div>
+                <info-block :title="project.goal + ' ETH'" description="募资上限"></info-block>
               </el-col>
               <el-col :span="8">
-                <div class="info-block">
-                  <p class="info-block-title">{{project.minInvest}} ETH</p>
-                  <p class="info-block-description">最小投资金额</p>
-                </div>
+                <info-block :title="project.minInvest + ' ETH'" description="最小投资金额"></info-block>
               </el-col>
               <el-col :span="8">
-                <div class="info-block">
-                  <p class="info-block-title">{{project.maxInvest}} ETH</p>
-                  <p class="info-block-description">最大投资金额</p>
-                </div>
+                <info-block :title="project.maxInvest + ' ETH'" description="最大投资金额"></info-block>
               </el-col>
               <el-col :span="8">
-                <div class="info-block">
-                  <p class="info-block-title">{{project.investorCount}} 人</p>
-                  <p class="info-block-description">参投人数</p>
-                </div>
+                <info-block :title="project.investorCount + ' 人'" description="参投人数"></info-block>
               </el-col>
               <el-col :span="8">
-                <div class="info-block">
-                  <p class="info-block-title">{{project.balance}} ETH</p>
-                  <p class="info-block-description">募资金额</p>
-                </div>
+                <info-block :title="project.investorCount + ' ETH'" description="已募资金额"></info-block>
               </el-col>
             </el-row>
           </el-card>
@@ -57,8 +42,13 @@
 import web3 from '../libs/web3';
 import Project from '../libs/project';
 import ProjectList from '../libs/projectList';
+import InfoBlock from '../components/InfoBlock';
 
 export default {
+  components: {
+    'info-block': InfoBlock,
+  },
+
   async asyncData() {
     const addressList = await ProjectList.methods.getProjects().call();
     const summaryList = await Promise.all(
@@ -68,7 +58,7 @@ export default {
           .call()
       )
     );
-    console.log({ summaryList });
+
     const projects = addressList.map((address, i) => {
       const [description, minInvest, maxInvest, goal, balance, investorCount, paymentCount, owner] = Object.values(
         summaryList[i]
@@ -86,7 +76,7 @@ export default {
         paymentCount,
         owner,
       };
-    });
+    }).reverse();
 
     console.log(projects);
 
@@ -98,6 +88,7 @@ export default {
 <style>
 .project-card {
   margin-bottom: 24px;
+  height: 388px;
 }
 
 .info-block {

@@ -11,34 +11,19 @@
         </div>
         <el-row :gutter="16" class="info-blocks">
           <el-col :span="8">
-            <div class="info-block">
-              <p class="info-block-title">{{project.goal}} ETH</p>
-              <p class="info-block-description">募资上限</p>
-            </div>
+            <info-block :title="project.goal + ' ETH'" description="募资上限"></info-block>
           </el-col>
           <el-col :span="8">
-            <div class="info-block">
-              <p class="info-block-title">{{project.minInvest}} ETH</p>
-              <p class="info-block-description">最小投资金额</p>
-            </div>
+            <info-block :title="project.minInvest + ' ETH'" description="最小投资金额"></info-block>
           </el-col>
           <el-col :span="8">
-            <div class="info-block">
-              <p class="info-block-title">{{project.maxInvest}} ETH</p>
-              <p class="info-block-description">最大投资金额</p>
-            </div>
+            <info-block :title="project.maxInvest + ' ETH'" description="最大投资金额"></info-block>
           </el-col>
           <el-col :span="8">
-            <div class="info-block">
-              <p class="info-block-title">{{project.investorCount}} 人</p>
-              <p class="info-block-description">参投人数</p>
-            </div>
+            <info-block :title="project.investorCount + ' 人'" description="参投人数"></info-block>
           </el-col>
           <el-col :span="8">
-            <div class="info-block">
-              <p class="info-block-title">{{project.balance}} ETH</p>
-              <p class="info-block-description">募资金额</p>
-            </div>
+            <info-block :title="project.investorCount + ' ETH'" description="已募资金额"></info-block>
           </el-col>
         </el-row>
         <el-form :inline="true" :model="contributeForm" class="contribute-form">
@@ -72,7 +57,7 @@
             width="400">
           </el-table-column>
           <el-table-column
-            prop="completed"
+            prop="completedText"
             label="已完成"
             width="100">
           </el-table-column>
@@ -95,7 +80,7 @@
               <el-button
                 v-if="scope.row.canDoPayment"
                 @click="doPayment(scope.$index)"
-                :loading="doPayment.loading === scope.$index"
+                :loading="doPaymentState.loading === scope.$index"
                 type="text"
                 size="small">资金划转</el-button>
             </template>
@@ -112,9 +97,13 @@
 <script>
 import web3 from '../../../libs/web3';
 import Project from '../../../libs/project';
+import InfoBlock from '../../../components/InfoBlock';
 
 export default {
   watchQuery: ['page'],
+  components: {
+    'info-block': InfoBlock,
+  },
 
   data() {
     return {
@@ -165,6 +154,7 @@ export default {
         x.voteStatus = `${x.voterCount}/${investorCount}`;
         x.canApprove = !x.completed;
         x.canDoPayment = !x.completed && x.voterCount / investorCount > 0.5;
+        x.completedText = x.completed ? '是' : '否';
         return x;
       }),
     };
