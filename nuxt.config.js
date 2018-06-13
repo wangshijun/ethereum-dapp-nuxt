@@ -15,12 +15,24 @@ module.exports = {
   plugins: [
     {
       src: '~plugins/element-ui',
-      ssr: false,
+      ssr: true,
     },
   ],
 
   // Build configuration
   build: {
+    extractCSS: true,
+    babel: {
+      plugins: [
+        [
+          "component",
+          {
+            "libraryName": "element-ui",
+            "styleLibraryName": "theme-chalk"
+          }
+        ]
+      ]
+    },
     vendor: ['element-ui'],
   },
 };
