@@ -87,9 +87,9 @@
           </el-table-column>
         </el-table>
       </el-card>
-      <a :href="'/projects/' + project.address + '/payments/create'">
+      <nuxt-link :to="'/projects/' + project.address + '/payments/create'">
         <el-button type="primary">创建资金支出请求</el-button>
-      </a>
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -136,6 +136,7 @@ export default {
     for (let i = 0; i < paymentCount; i++) {
       tasks.push(contract.methods.payments(i).call());
     }
+    console.log('tasks', tasks)
     const payments = await Promise.all(tasks);
 
     const project = {
@@ -221,7 +222,7 @@ export default {
 
     async approvePayment(i) {
       try {
-        this.setState('approveState', { loading: i });
+        this.setState('approveState', { loading: true });
 
         const accounts = await web3.eth.getAccounts();
         const sender = accounts[0];
@@ -249,7 +250,7 @@ export default {
 
     async doPayment(i) {
       try {
-        this.setState('doPaymentState', { loading: i });
+        this.setState('doPaymentState', { loading: true });
 
         const accounts = await web3.eth.getAccounts();
         const sender = accounts[0];

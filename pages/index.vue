@@ -8,7 +8,7 @@
             <div slot="header" class="clearfix">
               <strong>{{project.description}}</strong>
               <el-button style="float: right; padding: 3px 0" type="text">
-                <a :href="'/projects/' + project.address">查看详情</a>
+                <nuxt-link :to="'/projects/' + project.address">查看详情</nuxt-link>
               </el-button>
             </div>
             <div class="progress-container">

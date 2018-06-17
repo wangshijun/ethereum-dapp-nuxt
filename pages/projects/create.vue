@@ -97,7 +97,7 @@ export default {
         console.log(result);
 
         setTimeout(() => {
-          location.href = '/projects';
+          location.href = '/';
         }, 1000);
       } catch (err) {
         console.error(err);
